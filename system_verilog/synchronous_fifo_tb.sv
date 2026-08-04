@@ -1,3 +1,15 @@
+interface sync_fifo_if #(parameter int WIDTH = 8) (input logic clk);
+    logic             reset;
+    logic             w_en;
+    logic             r_en;
+    logic [WIDTH-1:0] w_data;
+    logic [WIDTH-1:0] r_data;
+    logic             full;
+    logic             empty;
+    logic             overflow;
+    logic             underflow;
+endinterface
+
 module sync_fifo_tb;
 
     logic clk = 0;
