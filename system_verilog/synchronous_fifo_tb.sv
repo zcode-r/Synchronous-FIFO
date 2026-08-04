@@ -88,10 +88,12 @@ module sync_fifo_tb;
         vif.w_data <= data;
         
         @(posedge clk);
-        vif.w_en   <= 1'b0; 
+        vif.w_en   <= 1'b0;
         
-        if (vif.full) begin
-            $display("[WARN] Write attempt to FULL FIFO! Data: 0x%h, Overflow: %b", data, vif.overflow);
+        #1;
+        
+        if (vif.overflow || (vif.full && vif.w_en)) begin
+            $display("[WARN] Write attempt to FULL FIFO! Data: 0x%h | Overflow: %b", data, vif.overflow);
         end else begin
             $display("[WRITE] Pushed Data: 0x%h | Full: %b, Empty: %b", data, vif.full, vif.empty);
         end
@@ -102,9 +104,11 @@ module sync_fifo_tb;
         vif.r_en <= 1'b1;
         
         @(posedge clk);
-        vif.r_en <= 1'b0; 
+        vif.r_en <= 1'b0;
         
-        if (vif.empty) begin
+        #1; 
+        
+        if (vif.underflow) begin
             $display("[WARN] Read attempt from EMPTY FIFO! Underflow: %b", vif.underflow);
         end else begin
             $display("[READ]  Popped Data: 0x%h | Full: %b, Empty: %b", vif.r_data, vif.full, vif.empty);
